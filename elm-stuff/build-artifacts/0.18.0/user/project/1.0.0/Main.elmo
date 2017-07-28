@@ -1,0 +1,341 @@
+var _user$project$Main$stf = function (s) {
+	var _p0 = _elm_lang$core$String$toFloat(s);
+	if (_p0.ctor === 'Ok') {
+		return _p0._0;
+	} else {
+		return 0;
+	}
+};
+var _user$project$Main$strtodict = function (l) {
+	return _elm_lang$core$Dict$fromList(
+		A2(
+			_elm_lang$core$List$map,
+			function (n) {
+				return {ctor: '_Tuple2', _0: n, _1: 0};
+			},
+			l));
+};
+var _user$project$Main$intinttostr = function (l) {
+	return A2(
+		_elm_lang$core$List$map,
+		function (n) {
+			return A2(
+				_elm_lang$core$Basics_ops['++'],
+				_elm_lang$core$Basics$toString(
+					_elm_lang$core$Tuple$first(n)),
+				A2(
+					_elm_lang$core$Basics_ops['++'],
+					'.',
+					_elm_lang$core$Basics$toString(
+						_elm_lang$core$Tuple$second(n))));
+		},
+		l);
+};
+var _user$project$Main$row = F2(
+	function (r, c) {
+		return A2(
+			_elm_lang$core$List$map,
+			function (n) {
+				return {ctor: '_Tuple2', _0: r, _1: n};
+			},
+			A2(_elm_lang$core$List$range, 1, c));
+	});
+var _user$project$Main$col = F2(
+	function (r, c) {
+		return A2(
+			_elm_lang$core$List$concatMap,
+			function (n) {
+				return A2(_user$project$Main$row, n, c);
+			},
+			A2(_elm_lang$core$List$range, 1, r));
+	});
+var _user$project$Main$initbody = F2(
+	function (r, c) {
+		return _user$project$Main$strtodict(
+			_user$project$Main$intinttostr(
+				A2(_user$project$Main$col, r, c)));
+	});
+var _user$project$Main$inithead = function (ncols) {
+	return _elm_lang$core$Dict$fromList(
+		_elm_lang$core$Array$toList(
+			A2(
+				_elm_lang$core$Array$initialize,
+				ncols,
+				function (c) {
+					return {
+						ctor: '_Tuple2',
+						_0: _elm_lang$core$Basics$toString(c + 1),
+						_1: A2(
+							_elm_lang$core$Basics_ops['++'],
+							'Atributo ',
+							_elm_lang$core$Basics$toString(c + 1))
+					};
+				})));
+};
+var _user$project$Main$update = F2(
+	function (msg, model) {
+		var _p1 = msg;
+		switch (_p1.ctor) {
+			case 'Running':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{running: !model.running});
+			case 'Addrow':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						lastrow: model.lastrow + 1,
+						body: A2(_user$project$Main$initbody, model.lastrow + 1, model.lastcol)
+					});
+			case 'Addcol':
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						lastcol: model.lastcol + 1,
+						head: _user$project$Main$inithead(model.lastcol + 1),
+						body: A2(_user$project$Main$initbody, model.lastrow, model.lastcol + 1)
+					});
+			case 'Changeh':
+				var _p3 = _p1._1;
+				var _p2 = _p1._0;
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						message: A2(_elm_lang$core$Basics_ops['++'], _p2, _p3),
+						head: A3(_elm_lang$core$Dict$insert, _p2, _p3, model.head)
+					});
+			default:
+				var _p5 = _p1._1;
+				var _p4 = _p1._0;
+				return _elm_lang$core$Native_Utils.update(
+					model,
+					{
+						message: A2(_elm_lang$core$Basics_ops['++'], _p4, _p5),
+						body: A3(
+							_elm_lang$core$Dict$insert,
+							_p4,
+							_user$project$Main$stf(_p5),
+							model.body)
+					});
+		}
+	});
+var _user$project$Main$ic = 3;
+var _user$project$Main$ir = 3;
+var _user$project$Main$Model = F6(
+	function (a, b, c, d, e, f) {
+		return {message: a, running: b, lastrow: c, lastcol: d, head: e, body: f};
+	});
+var _user$project$Main$model = A6(
+	_user$project$Main$Model,
+	'ok',
+	false,
+	_user$project$Main$ir,
+	_user$project$Main$ic,
+	_user$project$Main$inithead(_user$project$Main$ic),
+	A2(_user$project$Main$initbody, _user$project$Main$ir, _user$project$Main$ic));
+var _user$project$Main$Changeb = F2(
+	function (a, b) {
+		return {ctor: 'Changeb', _0: a, _1: b};
+	});
+var _user$project$Main$toHTMLtable = F3(
+	function (head, body, ids) {
+		var _p6 = A2(
+			_elm_lang$core$List$take,
+			_elm_lang$core$List$length(
+				_elm_lang$core$Dict$keys(head)),
+			body);
+		if (_p6.ctor === '[]') {
+			return {ctor: '[]'};
+		} else {
+			var ni = A2(
+				_elm_lang$core$List$take,
+				_elm_lang$core$List$length(
+					_elm_lang$core$Dict$keys(head)),
+				ids);
+			return {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$tr,
+					{ctor: '[]'},
+					A3(
+						_elm_lang$core$List$map2,
+						F2(
+							function (b, i) {
+								return A2(
+									_elm_lang$html$Html$td,
+									{ctor: '[]'},
+									{
+										ctor: '::',
+										_0: A2(
+											_elm_lang$html$Html$input,
+											{
+												ctor: '::',
+												_0: _elm_lang$html$Html_Attributes$placeholder(b),
+												_1: {
+													ctor: '::',
+													_0: _elm_lang$html$Html_Events$onInput(
+														_user$project$Main$Changeb(i)),
+													_1: {ctor: '[]'}
+												}
+											},
+											{ctor: '[]'}),
+										_1: {ctor: '[]'}
+									});
+							}),
+						_p6,
+						ni)),
+				_1: A3(
+					_user$project$Main$toHTMLtable,
+					head,
+					A2(
+						_elm_lang$core$List$drop,
+						_elm_lang$core$List$length(
+							_elm_lang$core$Dict$keys(head)),
+						body),
+					A2(
+						_elm_lang$core$List$drop,
+						_elm_lang$core$List$length(
+							_elm_lang$core$Dict$keys(head)),
+						ids))
+			};
+		}
+	});
+var _user$project$Main$Changeh = F2(
+	function (a, b) {
+		return {ctor: 'Changeh', _0: a, _1: b};
+	});
+var _user$project$Main$headtohtml = function (l) {
+	return A3(
+		_elm_lang$core$List$map2,
+		F2(
+			function (i, h) {
+				return A2(
+					_elm_lang$html$Html$th,
+					{ctor: '[]'},
+					{
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$input,
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html_Attributes$placeholder(h),
+								_1: {
+									ctor: '::',
+									_0: _elm_lang$html$Html_Events$onInput(
+										_user$project$Main$Changeh(i)),
+									_1: {ctor: '[]'}
+								}
+							},
+							{ctor: '[]'}),
+						_1: {ctor: '[]'}
+					});
+			}),
+		_elm_lang$core$Dict$keys(l),
+		_elm_lang$core$Dict$values(l));
+};
+var _user$project$Main$matrixview = function (m) {
+	return A2(
+		_elm_lang$html$Html$table,
+		{ctor: '[]'},
+		_elm_lang$core$List$concat(
+			{
+				ctor: '::',
+				_0: _user$project$Main$headtohtml(m.head),
+				_1: {
+					ctor: '::',
+					_0: A3(
+						_user$project$Main$toHTMLtable,
+						m.head,
+						A2(
+							_elm_lang$core$List$map,
+							function (n) {
+								return _elm_lang$core$Basics$toString(n);
+							},
+							_elm_lang$core$Dict$values(m.body)),
+						_elm_lang$core$Dict$keys(m.body)),
+					_1: {ctor: '[]'}
+				}
+			}));
+};
+var _user$project$Main$Addcol = {ctor: 'Addcol'};
+var _user$project$Main$Addrow = {ctor: 'Addrow'};
+var _user$project$Main$Running = {ctor: 'Running'};
+var _user$project$Main$headerview = function (m) {
+	return A2(
+		_elm_lang$html$Html$div,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: A2(
+				_elm_lang$html$Html$button,
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Addrow),
+					_1: {ctor: '[]'}
+				},
+				{
+					ctor: '::',
+					_0: _elm_lang$html$Html$text('Add Row'),
+					_1: {ctor: '[]'}
+				}),
+			_1: {
+				ctor: '::',
+				_0: A2(
+					_elm_lang$html$Html$button,
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Addcol),
+						_1: {ctor: '[]'}
+					},
+					{
+						ctor: '::',
+						_0: _elm_lang$html$Html$text('Add Column'),
+						_1: {ctor: '[]'}
+					}),
+				_1: {
+					ctor: '::',
+					_0: A2(
+						_elm_lang$html$Html$button,
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html_Events$onClick(_user$project$Main$Running),
+							_1: {ctor: '[]'}
+						},
+						{
+							ctor: '::',
+							_0: _elm_lang$html$Html$text('Run/Stop'),
+							_1: {ctor: '[]'}
+						}),
+					_1: {
+						ctor: '::',
+						_0: A2(
+							_elm_lang$html$Html$div,
+							{ctor: '[]'},
+							{
+								ctor: '::',
+								_0: _elm_lang$html$Html$text(
+									_elm_lang$core$Basics$toString(m.body)),
+								_1: {ctor: '[]'}
+							}),
+						_1: {ctor: '[]'}
+					}
+				}
+			}
+		});
+};
+var _user$project$Main$view = function (m) {
+	return A2(
+		_elm_lang$html$Html$section,
+		{ctor: '[]'},
+		{
+			ctor: '::',
+			_0: _user$project$Main$headerview(m),
+			_1: {
+				ctor: '::',
+				_0: _user$project$Main$matrixview(m),
+				_1: {ctor: '[]'}
+			}
+		});
+};
+var _user$project$Main$main = _elm_lang$html$Html$beginnerProgram(
+	{model: _user$project$Main$model, view: _user$project$Main$view, update: _user$project$Main$update})();
